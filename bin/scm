@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#Chicken Scheme ファイル生成
+
+echo "(import (r7rs))" >> $1
+open $1
+
+echo "Compile: csc -R r7rs $1"
+echo "Hint: alias csc='csc -R r7rs' -> Compile: csc $1"
