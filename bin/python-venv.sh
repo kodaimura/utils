@@ -11,3 +11,5 @@ cd $PROJECT_NAME
 python3 -m venv myvenv
 
 source myvenv/bin/activate
+
+#deactivate
