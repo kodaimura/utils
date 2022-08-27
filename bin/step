@@ -1,0 +1,54 @@
+#!/bin/zsh
+
+# ディレクトリ内の指定拡張子のステップ数を調べる
+# step パス 拡張子1 [拡張子2 拡張子3 ...]
+
+DIR_PATH=$1
+
+if [ -z $1 ]; then
+	echo "usage: step <DIR_PATH> <FILE_EXT1> [EXT2 EXT3 ...]]"
+	exit 1
+fi
+
+#入力が . -> カレント絶対パス
+if [ $DIR_PATH = "." ]; then
+	DIR_PATH=$(pwd)
+fi
+
+#相対パス -> 絶対パス
+if [ ${DIR_PATH:0:1} != "/" ]; then
+	DIR_PATH="${$(pwd)}/${DIR_PATH}"
+fi
+
+#パスのディレクトリが存在しない
+if [ ! -d $DIR_PATH ]; then
+	echo "step: no such file or directory: ${DIR_PATH}"
+	exit 1
+fi
+
+STEP=0
+TOTAL_EXT=0
+TOTAL=0
+
+for EXT in ${@:2} ;
+do
+	if [ ${EXT:0:1} != "." ]; then
+		EXT=".${EXT}"
+	fi
+
+	for fpath in `find $DIR_PATH -name "*${EXT}"` 
+	do 
+		STEP=$(cat $fpath | wc -l)
+		echo "${fpath} ... ${STEP}"
+		TOTAL_EXT=$(($TOTAL_EXT + $STEP))
+		TOTAL=$(($TOTAL + $STEP))
+	done
+	echo "-----------------------------------------------------------"
+	echo "${EXT} total ... ${TOTAL_EXT}"
+	echo "-----------------------------------------------------------"
+	TOTAL_EXT=0
+done
+
+
+echo ""
+echo "total steps .....  ${TOTAL}"
